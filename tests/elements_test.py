@@ -1,6 +1,6 @@
-import time
 from conftest import driver
-from pages.elements_page import TextBoxPage
+from pages.elements_page import TextBoxPage, CheckBoxPage
+
 
 def test_text_box(driver):
     text_box_page = TextBoxPage(driver, "https://demoqa.com/text-box")
@@ -8,3 +8,12 @@ def test_text_box(driver):
     input_data = text_box_page.fill_of_fields()
     output_data = text_box_page.check_filled_form()
     #assert input_data == output_data, "error"
+
+def test_checkbox(driver):
+    check_box_page = CheckBoxPage(driver, "https://demoqa.com/checkbox")
+    check_box_page.open()
+    check_box_page.open_full_list()
+    check_box_page.click_random_checkbox()
+    input_result = check_box_page.get_checked_checkboxes()
+    output_result = check_box_page.get_output_result()
+    assert input_result == output_result, "checkboxes have not been selected"
