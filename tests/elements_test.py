@@ -1,5 +1,5 @@
 from conftest import driver
-from pages.elements_page import TextBoxPage, CheckBoxPage
+from pages.elements_page import TextBoxPage, CheckBoxPage, RadioButtonPage
 
 
 def test_text_box(driver):
@@ -17,3 +17,10 @@ def test_checkbox(driver):
     input_result = check_box_page.get_checked_checkboxes()
     output_result = check_box_page.get_output_result()
     assert input_result == output_result, "checkboxes have not been selected"
+
+def test_radio_button(driver):
+    radio_button_page = RadioButtonPage(driver, "https://demoqa.com/radio-button")
+    radio_button_page.open()
+    radio_button_page.click_on_the_radio_button('impressive') # Input yes, impressive or no
+    radio_button_page.get_output_result()
+    assert radio_button_page.get_output_result() == 'Impressive', 'RadioButton has not been selected'

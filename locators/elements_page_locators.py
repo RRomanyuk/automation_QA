@@ -1,8 +1,5 @@
 from selenium.webdriver.common.by import By
 
-from pages.base_page import BasePage
-
-
 class TextBoxPageLocators:
 
     #form fields
@@ -25,3 +22,10 @@ class CheckBoxPageLocators:
     CHECKED_ITEMS = (By.CSS_SELECTOR, "svg[class='rct-icon rct-icon-check']")
     TITLE_ITEM = ".//ancestor::span[@class='rct-text']"
     OUTPUT_RESULT = (By.CSS_SELECTOR, "span[class='text-success']")
+
+class RadioButtonPageLocators:
+
+    RADIO_BUTTON_YES = (By.CSS_SELECTOR, "label[class^='custom-control'][for='yesRadio']")
+    RADIO_BUTTON_IMPRESSIVE = (By.CSS_SELECTOR, "label[class^='custom-control'][for='impressiveRadio']")
+    RADIO_BUTTON_NO = (By.CSS_SELECTOR, "label[class^='custom-control'][for='noRadio']")
+    RESULT = (By.CSS_SELECTOR, 'p span[class="text-success"]')
