@@ -1,7 +1,10 @@
 import random
 
+from selenium.webdriver.common.by import By
+
 from generator.generator import generated_person
-from locators.elements_page_locators import TextBoxPageLocators, CheckBoxPageLocators, RadioButtonPageLocators
+from locators.elements_page_locators import TextBoxPageLocators, CheckBoxPageLocators, RadioButtonPageLocators, \
+    WebTablePageLocators
 from pages.base_page import BasePage
 
 class TextBoxPage(BasePage):
@@ -70,3 +73,75 @@ class RadioButtonPage(BasePage):
     def get_output_result(self):
         return self.element_is_present(self.locators.RESULT).text
 
+class WebTablePage(BasePage):
+    locators = WebTablePageLocators()
+
+    def add_new_person(self):
+        person_info = next(generated_person())
+        first_name = person_info.first_name
+        last_name = person_info.last_name
+        email = person_info.email
+        age = person_info.age
+        salary = person_info.salary
+        department = person_info.department
+        self.element_is_visible(self.locators.ADD_BUTTON).click()
+        self.element_is_visible(self.locators.FIRST_NAME_INPUT).send_keys(first_name)
+        self.element_is_visible(self.locators.LAST_NAME_INPUT).send_keys(last_name)
+        self.element_is_visible(self.locators.EMAIL_INPUT).send_keys(email)
+        self.element_is_visible(self.locators.AGE_INPUT).send_keys(age)
+        self.element_is_visible(self.locators.SALARY_INPUT).send_keys(salary)
+        self.element_is_visible(self.locators.DEPARTMENT_INPUT).send_keys(department)
+        self.element_is_visible(self.locators.SUBMIT_BUTTON).click()
+
+        return [first_name, last_name, str(age), email, str(salary), department]
+
+    def check_new_person(self):
+        person_list = self.elements_are_present(self.locators.FULL_PEOPLE_LIST)
+        data = []
+        for item in person_list:
+            if not item.text.strip():
+                continue
+            self.go_to_element(item)
+            data.append(item.text.splitlines())
+        return data
+
+    def search_person(self, key_word):
+        self.element_is_visible(self.locators.SEARCH_INPUT).send_keys(str(key_word))
+
+    def check_search_person(self):
+        delete_button = self.element_is_present(self.locators.DELETE_BUTTON)
+        row = delete_button.find_element("xpath", self.locators.ROW_PARENT)
+        return row.text.splitlines()
+
+    def edit_person_info(self):
+        table = self.element_is_visible(self.locators.TABLE)
+        self.go_to_element(table)
+        self.element_is_visible(self.locators.EDIT_BUTTON).click()
+        data = self.check_new_person()
+        choice_field_for_edit = random.randint(0, 5)
+        field_names = ["first_name", "last_name", "email", "age", "salary", "department"]
+        locator = getattr(self.locators, field_names[choice_field_for_edit].upper() + "_INPUT")
+        self.element_is_visible(locator).send_keys(data[choice_field_for_edit])
+        self.element_is_visible(self.locators.SUBMIT_BUTTON).click()
+        return data, data[choice_field_for_edit]
+
+    def delete_person(self):
+        self.element_is_visible(self.locators.DELETE_BUTTON).click()
+
+    def check_deleted_person(self):
+        return self.element_is_present(self.locators.NO_ROWS_FOUND).text
+
+    def select_up_to_rows(self):
+        count = [5, 10, 20, 25, 50, 100]
+        data = []
+        for rows in count:
+            count_row_button = self.element_is_visible(self.locators.COUNT_ROW_LIST)
+            self.go_to_element(count_row_button)
+            count_row_button.click()
+            self.element_is_visible((By.CSS_SELECTOR, f"option[value='{rows}']")).click()
+            data.append(self.check_count_rows())
+        return data, count
+
+    def check_count_rows(self):
+        list_rows = self.elements_are_present(self.locators.FULL_PEOPLE_LIST)
+        return len(list_rows)
