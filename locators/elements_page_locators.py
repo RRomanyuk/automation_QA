@@ -50,3 +50,15 @@ class WebTablePageLocators:
     TABLE = (By.CSS_SELECTOR, "div[class='rt-table']")
     NO_ROWS_FOUND = (By.CSS_SELECTOR, "div[class='rt-noData']")
     COUNT_ROW_LIST = (By.CSS_SELECTOR, "select[aria-label='rows per page']")
+
+class ButtonsPageLocators:
+
+    DOUBLE_CLICK_BUTTON = (By.CSS_SELECTOR, "button[id='doubleClickBtn']")
+    RIGHT_CLICK_BUTTON = (By.CSS_SELECTOR, "button[id='rightClickBtn']")
+    CLICK_BUTTON = (By.XPATH, "//div[3]/button")
+
+    #result
+    SUCCESS_DOUBLE_CLICK_BUTTON = (By.CSS_SELECTOR, "p[id='doubleClickMessage']")
+    SUCCESS_RIGHT_CLICK_BUTTON = (By.CSS_SELECTOR, "p[id='rightClickMessage']")
+    SUCCESS_CLICK_ME_BUTTON = (By.CSS_SELECTOR, "p[id='dynamicClickMessage']")
+

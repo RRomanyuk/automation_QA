@@ -2,7 +2,7 @@ import random
 import time
 
 from conftest import driver
-from pages.elements_page import TextBoxPage, CheckBoxPage, RadioButtonPage, WebTablePage
+from pages.elements_page import TextBoxPage, CheckBoxPage, RadioButtonPage, WebTablePage, ButtonsPage
 
 
 def test_text_box(driver):
@@ -70,3 +70,13 @@ def test_change_table_rows(driver):
     web_table_page.open()
     data, count = web_table_page.select_up_to_rows()
     assert data == count
+
+def test_buttons(driver):
+    buttons_page = ButtonsPage(driver, "https://demoqa.com/buttons")
+    buttons_page.open()
+    click = buttons_page.click_on_button()
+    right = buttons_page.right_click_on_button()
+    doubleclick = buttons_page.double_click_on_button()
+    assert click == "You have done a dynamic click"
+    assert right == "You have done a right click"
+    assert doubleclick == "You have done a double click"
