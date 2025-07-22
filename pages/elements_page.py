@@ -1,6 +1,7 @@
 import random
 
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
 
 from generator.generator import generated_person
 from locators.elements_page_locators import TextBoxPageLocators, CheckBoxPageLocators, RadioButtonPageLocators, \
@@ -150,24 +151,24 @@ class ButtonsPage(BasePage):
     locators = ButtonsPageLocators()
 
     def click_on_button(self):
-        click_button = self.driver.find_element("xpath", self.locators.CLICK_BUTTON)
-        self.element_is_visible(click_button)
+        self.element_is_visible(self.locators.CLICK_BUTTON)
+        click_button = self.driver.find_element(*self.locators.CLICK_BUTTON)
         self.go_to_element(click_button)
         click_button.click()
         return self.check_clicked_on_button(self.locators.SUCCESS_CLICK_ME_BUTTON)
 
     def right_click_on_button(self):
-        right_click = self.locators.RIGHT_CLICK_BUTTON
-        self.element_is_visible(right_click)
-        self.go_to_element(right_click)
-        self.action_right_click(right_click)
+        self.element_is_visible(self.locators.RIGHT_CLICK_BUTTON)
+        right_click_buttons = self.driver.find_element(*self.locators.RIGHT_CLICK_BUTTON)
+        self.go_to_element(right_click_buttons)
+        self.action_right_click(right_click_buttons)
         return self.check_clicked_on_button(self.locators.SUCCESS_RIGHT_CLICK_BUTTON)
 
     def double_click_on_button(self):
-        double_click = self.locators.DOUBLE_CLICK_BUTTON
-        self.element_is_visible(double_click)
-        self.go_to_element(double_click)
-        self.action_double_click(double_click)
+        self.element_is_visible(self.locators.DOUBLE_CLICK_BUTTON)
+        double_click_buttons = self.driver.find_element(*self.locators.DOUBLE_CLICK_BUTTON)
+        self.go_to_element(double_click_buttons)
+        self.action_double_click(double_click_buttons)
         return self.check_clicked_on_button(self.locators.SUCCESS_DOUBLE_CLICK_BUTTON)
 
     def check_clicked_on_button(self, element):
