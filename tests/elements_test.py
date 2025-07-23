@@ -2,7 +2,8 @@ import random
 import time
 
 from conftest import driver
-from pages.elements_page import TextBoxPage, CheckBoxPage, RadioButtonPage, WebTablePage, ButtonsPage, LinksPage
+from pages.elements_page import TextBoxPage, CheckBoxPage, RadioButtonPage, WebTablePage, ButtonsPage, LinksPage, \
+    UploadAndDownloadPage
 
 
 def test_text_box(driver):
@@ -92,3 +93,16 @@ def test_broken_links(driver):
     links_page.open()
     response_code = links_page.check_broken_list("https://demoqa.com/bad-request")
     assert response_code == 400, "Broken link is not found"
+
+def test_download_file(driver):
+    download_page = UploadAndDownloadPage(driver, "https://demoqa.com/upload-download")
+    download_page.open()
+    check = download_page.download_file()
+    assert check is True, "The file has not been downloaded"
+
+
+def test_upload_file(driver):
+    upload_page = UploadAndDownloadPage(driver, "https://demoqa.com/upload-download")
+    upload_page.open()
+    file_name, upload_file_name = upload_page.upload_file()
+    assert file_name == upload_file_name, "The file has not been uploaded"

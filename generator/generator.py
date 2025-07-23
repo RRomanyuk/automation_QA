@@ -17,3 +17,9 @@ def generated_person():
         current_address=faker.address(),
         permanent_address=faker.address(),
     )
+
+def generated_file():
+    path = rf'C:\dotret\filetest{random.randint(1,1000)}.txt'
+    file = open(path, 'w+')
+    file.write(f"New text file")
+    return file.name, path
