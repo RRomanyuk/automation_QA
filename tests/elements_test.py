@@ -3,7 +3,7 @@ import time
 
 from conftest import driver
 from pages.elements_page import TextBoxPage, CheckBoxPage, RadioButtonPage, WebTablePage, ButtonsPage, LinksPage, \
-    UploadAndDownloadPage
+    UploadAndDownloadPage, DynamicPropertiesPage
 
 
 def test_text_box(driver):
@@ -100,9 +100,27 @@ def test_download_file(driver):
     check = download_page.download_file()
     assert check is True, "The file has not been downloaded"
 
-
 def test_upload_file(driver):
     upload_page = UploadAndDownloadPage(driver, "https://demoqa.com/upload-download")
     upload_page.open()
     file_name, upload_file_name = upload_page.upload_file()
     assert file_name == upload_file_name, "The file has not been uploaded"
+
+
+def test_clickable_button(driver):
+    dynamic_properties_page = DynamicPropertiesPage(driver, "https://demoqa.com/dynamic-properties")
+    dynamic_properties_page.open()
+    check = dynamic_properties_page.check_enable_button()
+    assert check is True, "The button has not been clickable"
+
+def test_change_color_button(driver):
+    dynamic_properties_page = DynamicPropertiesPage(driver, "https://demoqa.com/dynamic-properties")
+    dynamic_properties_page.open()
+    color_before, color_after = dynamic_properties_page.check_changed_color()
+    assert color_before != color_after, "Color not changed"
+
+def test_appear_button(driver):
+    dynamic_properties_page = DynamicPropertiesPage(driver, "https://demoqa.com/dynamic-properties")
+    dynamic_properties_page.open()
+    check = dynamic_properties_page.check_appear_button()
+    assert check is True, "The button has not been appeared"

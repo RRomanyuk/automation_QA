@@ -1,12 +1,17 @@
 import base64
 import os
 import random
+from gc import enable
 
 import requests
+from selenium.common import NoSuchElementException, TimeoutException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+
 from generator.generator import generated_person, generated_file
 from locators.elements_page_locators import TextBoxPageLocators, CheckBoxPageLocators, RadioButtonPageLocators, \
-    WebTablePageLocators, ButtonsPageLocators, LinksPageLocators, UploadAndDownloadLocators
+    WebTablePageLocators, ButtonsPageLocators, LinksPageLocators, UploadAndDownloadPageLocators, \
+    DynamicPropertiesPageLocators
 from pages.base_page import BasePage
 
 class TextBoxPage(BasePage):
@@ -192,7 +197,7 @@ class LinksPage(BasePage):
             return request.status_code
 
 class UploadAndDownloadPage(BasePage):
-    locators = UploadAndDownloadLocators()
+    locators = UploadAndDownloadPageLocators()
 
     def upload_file(self):
         file_name, path = generated_file()
@@ -212,3 +217,30 @@ class UploadAndDownloadPage(BasePage):
             f.close()
             os.remove(path_name_file)
         return check_file
+
+class DynamicPropertiesPage(BasePage):
+    locators = DynamicPropertiesPageLocators()
+
+    def check_enable_button(self):
+        try:
+            self.element_is_clickable(self.locators.ENABLE_BUTTON)
+            return True
+        except TimeoutException:
+            return False
+
+    def check_changed_color(self):
+        color_button = self.element_is_present(self.locators.COLOR_CHANGE_BUTTON)
+        color_button_before = color_button.value_of_css_property("color")
+        WebDriverWait(self.driver, 5).until(
+            lambda driver: color_button.value_of_css_property("color") != color_button_before
+        )
+        color_button_after = color_button.value_of_css_property("color")
+        print(color_button_before, color_button_after)
+        return color_button_before, color_button_after
+
+    def check_appear_button(self):
+        try:
+            self.element_is_visible(self.locators.VISIBLE_BUTTON_5_SEC)
+            return True
+        except TimeoutException:
+            return False
