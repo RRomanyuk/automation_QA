@@ -1,11 +1,10 @@
 import random
 
+import requests
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
-
 from generator.generator import generated_person
 from locators.elements_page_locators import TextBoxPageLocators, CheckBoxPageLocators, RadioButtonPageLocators, \
-    WebTablePageLocators, ButtonsPageLocators
+    WebTablePageLocators, ButtonsPageLocators, LinksPageLocators
 from pages.base_page import BasePage
 
 class TextBoxPage(BasePage):
@@ -49,7 +48,7 @@ class CheckBoxPage(BasePage):
         checked_list = self.elements_are_present(self.locators.CHECKED_ITEMS)
         data = []
         for item in checked_list:
-            title_item = item.find_element("xpath", self.locators.TITLE_ITEM)
+            title_item = self.get_element(item)
             data.append(title_item.text)
         return str(data).replace(' ', '').replace('.doc', '').lower()
 
@@ -111,7 +110,7 @@ class WebTablePage(BasePage):
 
     def check_search_person(self):
         delete_button = self.element_is_present(self.locators.DELETE_BUTTON)
-        row = delete_button.find_element("xpath", self.locators.ROW_PARENT)
+        row = self.get_element(delete_button)
         return row.text.splitlines()
 
     def edit_person_info(self):
@@ -136,8 +135,7 @@ class WebTablePage(BasePage):
         count = [5, 10, 20, 25, 50, 100]
         data = []
         for rows in count:
-            count_row_button = self.element_is_visible(self.locators.COUNT_ROW_LIST)
-            self.go_to_element(count_row_button)
+            count_row_button = self.get_element_and_scroll_into_view(self.locators.COUNT_ROW_LIST)
             count_row_button.click()
             self.element_is_visible((By.CSS_SELECTOR, f"option[value='{rows}']")).click()
             data.append(self.check_count_rows())
@@ -151,25 +149,42 @@ class ButtonsPage(BasePage):
     locators = ButtonsPageLocators()
 
     def click_on_button(self):
-        self.element_is_visible(self.locators.CLICK_BUTTON)
-        click_button = self.driver.find_element(*self.locators.CLICK_BUTTON)
-        self.go_to_element(click_button)
+        click_button = self.get_element_and_scroll_into_view(self.locators.CLICK_BUTTON)
         click_button.click()
         return self.check_clicked_on_button(self.locators.SUCCESS_CLICK_ME_BUTTON)
 
     def right_click_on_button(self):
-        self.element_is_visible(self.locators.RIGHT_CLICK_BUTTON)
-        right_click_buttons = self.driver.find_element(*self.locators.RIGHT_CLICK_BUTTON)
-        self.go_to_element(right_click_buttons)
+        right_click_buttons = self.get_element_and_scroll_into_view(self.locators.RIGHT_CLICK_BUTTON)
         self.action_right_click(right_click_buttons)
         return self.check_clicked_on_button(self.locators.SUCCESS_RIGHT_CLICK_BUTTON)
 
     def double_click_on_button(self):
-        self.element_is_visible(self.locators.DOUBLE_CLICK_BUTTON)
-        double_click_buttons = self.driver.find_element(*self.locators.DOUBLE_CLICK_BUTTON)
-        self.go_to_element(double_click_buttons)
+        double_click_buttons = self.get_element_and_scroll_into_view(
+            self.locators.DOUBLE_CLICK_BUTTON)
         self.action_double_click(double_click_buttons)
         return self.check_clicked_on_button(self.locators.SUCCESS_DOUBLE_CLICK_BUTTON)
 
     def check_clicked_on_button(self, element):
         return self.element_is_present(element).text
+
+class LinksPage(BasePage):
+    locators = LinksPageLocators()
+
+    def check_new_tab_simple_link(self):
+        simple_link = self.get_element_and_scroll_into_view(self.locators.SIMPLE_LINK)
+        link_href = simple_link.get_attribute("href")
+        request = requests.get(link_href)
+        if request.status_code == 200:
+            simple_link.click()
+            self.driver.switch_to.window(self.driver.window_handles[1])
+            return link_href, self.driver.current_url
+        else:
+            return link_href, request.status_code
+        
+    def check_broken_list(self, url):
+        request = requests.get(url)
+        bad_request = self.get_element_and_scroll_into_view(self.locators.BAD_REQUEST)
+        if request.status_code == 200:
+            bad_request.click()
+        else:
+            return request.status_code
