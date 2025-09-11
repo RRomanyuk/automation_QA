@@ -1,10 +1,9 @@
 import base64
 import os
 import random
-from gc import enable
 
 import requests
-from selenium.common import NoSuchElementException, TimeoutException
+from selenium.common import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 
@@ -142,7 +141,7 @@ class WebTablePage(BasePage):
         count = [5, 10, 20, 25, 50, 100]
         data = []
         for rows in count:
-            count_row_button = self.get_element_and_scroll_into_view(self.locators.COUNT_ROW_LIST)
+            count_row_button = self.element_is_visible(self.locators.COUNT_ROW_LIST)
             count_row_button.click()
             self.element_is_visible((By.CSS_SELECTOR, f"option[value='{rows}']")).click()
             data.append(self.check_count_rows())
@@ -156,17 +155,17 @@ class ButtonsPage(BasePage):
     locators = ButtonsPageLocators()
 
     def click_on_button(self):
-        click_button = self.get_element_and_scroll_into_view(self.locators.CLICK_BUTTON)
+        click_button = self.element_is_visible(self.locators.CLICK_BUTTON)
         click_button.click()
         return self.check_clicked_on_button(self.locators.SUCCESS_CLICK_ME_BUTTON)
 
     def right_click_on_button(self):
-        right_click_buttons = self.get_element_and_scroll_into_view(self.locators.RIGHT_CLICK_BUTTON)
+        right_click_buttons = self.element_is_visible(self.locators.RIGHT_CLICK_BUTTON)
         self.action_right_click(right_click_buttons)
         return self.check_clicked_on_button(self.locators.SUCCESS_RIGHT_CLICK_BUTTON)
 
     def double_click_on_button(self):
-        double_click_buttons = self.get_element_and_scroll_into_view(
+        double_click_buttons = self.element_is_visible(
             self.locators.DOUBLE_CLICK_BUTTON)
         self.action_double_click(double_click_buttons)
         return self.check_clicked_on_button(self.locators.SUCCESS_DOUBLE_CLICK_BUTTON)
@@ -178,7 +177,7 @@ class LinksPage(BasePage):
     locators = LinksPageLocators()
 
     def check_new_tab_simple_link(self):
-        simple_link = self.get_element_and_scroll_into_view(self.locators.SIMPLE_LINK)
+        simple_link = self.element_is_visible(self.locators.SIMPLE_LINK)
         link_href = simple_link.get_attribute("href")
         request = requests.get(link_href)
         if request.status_code == 200:
@@ -190,7 +189,7 @@ class LinksPage(BasePage):
         
     def check_broken_list(self, url):
         request = requests.get(url)
-        bad_request = self.get_element_and_scroll_into_view(self.locators.BAD_REQUEST)
+        bad_request = self.element_is_visible(self.locators.BAD_REQUEST)
         if request.status_code == 200:
             bad_request.click()
         else:

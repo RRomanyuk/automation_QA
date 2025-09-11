@@ -16,6 +16,8 @@ def generated_person():
         email=faker.email(),
         current_address=faker.address(),
         permanent_address=faker.address(),
+        mobile=faker.msisdn(),
+
     )
 
 def generated_file():
@@ -23,3 +25,9 @@ def generated_file():
     file = open(path, 'w+')
     file.write(f"New text file")
     return file.name, path
+
+def choice_subject():
+
+    subjects_arr = ["English", "Maths", "Physics", "Chemistry", "Biology", "Computer Science", "Commerce",
+                    "Accounting", "Economics", "Arts", "Social Studies", "History", "Civics"]
+    return subjects_arr[random.randint(0, len(subjects_arr) - 1)]

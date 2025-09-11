@@ -106,7 +106,6 @@ def test_upload_file(driver):
     file_name, upload_file_name = upload_page.upload_file()
     assert file_name == upload_file_name, "The file has not been uploaded"
 
-
 def test_clickable_button(driver):
     dynamic_properties_page = DynamicPropertiesPage(driver, "https://demoqa.com/dynamic-properties")
     dynamic_properties_page.open()

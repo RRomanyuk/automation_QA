@@ -7,8 +7,15 @@ class BasePage:
         self.driver = driver
         self.url = url
 
+    def remove_ads(self):
+        self.driver.execute_script("""
+            document.querySelectorAll('#fixedban, footer').forEach(el => el.remove());
+            document.querySelectorAll('iframe').forEach(el => el.remove());
+        """)
+
     def open(self):
         self.driver.get(self.url)
+        self.remove_ads()
 
     def element_is_visible(self, locator, timeout=5):
         return wait(self.driver, timeout).until(EC.visibility_of_element_located(locator))
@@ -33,12 +40,6 @@ class BasePage:
 
     def get_element(self, locator):
         return self.driver.find_element(*locator)
-
-    def get_element_and_scroll_into_view(self, locator): #new function go_to_element and get_element
-        self.element_is_visible(locator)
-        element = self.driver.find_element(*locator)
-        self.driver.execute_script("arguments[0].scrollIntoView();", element)
-        return element
 
     def action_double_click(self, element):
         action = ActionChains(self.driver)
